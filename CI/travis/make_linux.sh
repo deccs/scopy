@@ -7,13 +7,6 @@ if [ -f /opt/qt59/bin/qt59-env.sh ] ; then
 	. /opt/qt59/bin/qt59-env.sh
 fi
 
-set -e
-
-if command -v brew ; then
-	QT_PATH="$(brew --prefix qt)/bin"
-	export PATH="${QT_PATH}:$PATH"
-fi
-
 . /$LIBNAME/CI/travis/lib.sh
 
 NUM_JOBS=4
@@ -39,6 +32,13 @@ handle_ubuntu_docker() {
 			-v `pwd`:/scopy:rw \
 			ubuntu:${OS_VERSION} \
 			/bin/bash -xe /scopy/CI/travis/inside_ubuntu_docker.sh scopy
+}
+
+handle_ubuntu_flatpak_docker() {
+	sudo docker run --privileged --rm=true \
+			-v `pwd`:/scopy:rw \
+			alexandratr/ubuntu-flatpak-kde:latest \
+			/bin/bash -xe /scopy/CI/travis/inside_ubuntu_flatpak_docker.sh
 }
 
 LIBNAME=${1:-home/travis/build/analogdevicesinc/scopy}
